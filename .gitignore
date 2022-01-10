@@ -20,6 +20,19 @@
 # is commented out by default.
 #.vscode/
 
+# Thumbs files
+Thumbs.db
+
+# Stores
+*.g.dart
+
+# Environments Variables and Configurations Files
+.env
+.env.local
+.env.dev
+.env.test
+.env.test.local
+
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
