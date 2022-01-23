@@ -3,7 +3,7 @@ description: An app to give more visibility to self-employed professionals.
 
 publish_to: "none"
 
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: ">=2.15.1 <3.0.0"
