@@ -23,17 +23,20 @@ class AutonomousDetailsScreen extends StatelessWidget {
     if (title == null) return Container();
 
     return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
       iconColor: const Color(0xFF4267B2),
       leading: Icon(
         icon,
         size: 30,
       ),
-      title: Text(
-        title,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
+      title: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );
@@ -109,10 +112,12 @@ class AutonomousDetailsScreen extends StatelessWidget {
               flexibleSpace: FlexibleSpaceBar(
                 title: Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: Text(
-                    autonomous.name ?? '',
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      autonomous.name ?? '',
+                      softWrap: false,
+                    ),
                   ),
                 ),
                 background: Stack(
@@ -153,14 +158,15 @@ class AutonomousDetailsScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Text(
-                            autonomous.profession ?? '',
-                            overflow: TextOverflow.fade,
-                            softWrap: false,
-                            style: const TextStyle(
-                              color: Color(0xFFFFFFFF),
-                              fontSize: 22,
-                              fontWeight: FontWeight.w500,
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              autonomous.profession ?? '',
+                              style: const TextStyle(
+                                color: Color(0xFFFFFFFF),
+                                fontSize: 22,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],

@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const int _professionsQueryLimit = 10;
+  static const int _professionsQueryLimit = 20;
 
   final FirebaseDatabase _firebaseDatabase = FirebaseDatabase.instance;
   List<String> _professions = [];
@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await _firebaseDatabase
         .reference()
         .child('professions')
-        .limitToFirst(_professionsQueryLimit)
+        .limitToLast(_professionsQueryLimit)
         .once()
         .then((snapshot) {
       final Map<String, dynamic> professionsFromDatabase =
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
           .reference()
           .child('users')
           .child('autonomous')
-          .limitToLast(_professionsQueryLimit)
+          .limitToFirst(_professionsQueryLimit)
           .once()
           .then((snapshot) {
         final Map<String, dynamic> professionsFromDatabase =

@@ -17,7 +17,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  static const int _professionsQueryLimit = 10;
+  static const int _professionsQueryLimit = 35;
 
   final FirebaseDatabase _firebaseDatabase = FirebaseDatabase.instance;
   List<String> _professions = [];
@@ -134,7 +134,7 @@ class _SearchScreenState extends State<SearchScreen> {
     await _firebaseDatabase
         .reference()
         .child('professions')
-        .limitToFirst(_professionsQueryLimit)
+        .limitToLast(_professionsQueryLimit)
         .once()
         .then((snapshot) {
       final Map<String, dynamic> professionsFromDatabase =

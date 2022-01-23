@@ -36,13 +36,16 @@ class AutonomousList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              profession,
-              style: const TextStyle(
-                color: Color(0xFF333333),
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                profession,
+                style: const TextStyle(
+                  color: Color(0xFF333333),
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
