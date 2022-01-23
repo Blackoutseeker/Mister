@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> _createNewAutonomous() async {
     _dismissKeyboard();
 
-    final String email = _emailController.text;
+    final String email = _emailController.text.toLowerCase();
     final String password = _passwordController.text;
     final String name = _nameController.text;
     final String phone = _phoneController.text;
