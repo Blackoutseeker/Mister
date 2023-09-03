@@ -4,8 +4,8 @@ import 'package:mister/models/routes/app_routes.dart';
 
 import 'package:mister/controllers/services/authentication.dart';
 
-class InitialScrren extends StatelessWidget {
-  InitialScrren({Key? key}) : super(key: key);
+class InitialScreen extends StatelessWidget {
+  InitialScreen({Key? key}) : super(key: key);
 
   final Authentication _authentication = Authentication.instance;
 

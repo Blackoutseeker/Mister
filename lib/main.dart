@@ -49,9 +49,9 @@ class App extends StatelessWidget {
       builder: (_) => MaterialApp(
         title: 'Mister',
         themeMode: _themeStore.isDark ? ThemeMode.dark : ThemeMode.light,
-        home: isLogged != null ? const MainScreen() : InitialScrren(),
+        home: isLogged != null ? const MainScreen() : InitialScreen(),
         routes: {
-          AppRoutes.initialScreen: (_) => InitialScrren(),
+          AppRoutes.initialScreen: (_) => InitialScreen(),
           AppRoutes.signInScreen: (_) => const SignInScreen(),
           AppRoutes.signUpScreen: (_) => const SignUpScreen(),
           AppRoutes.mainScreen: (_) => const MainScreen(),
