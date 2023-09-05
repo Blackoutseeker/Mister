@@ -41,7 +41,7 @@ class Authentication implements AuthenticationMethods {
     });
   }
 
-  Future<Widget> _showDialogToUser(
+  Future<Widget?> _showDialogToUser(
     BuildContext context,
     String title,
     String content,
@@ -54,8 +54,8 @@ class Authentication implements AuthenticationMethods {
         content: Text(content),
         actions: <TextButton>[
           TextButton(
-            child: const Text('OK'),
             onPressed: Navigator.of(context).pop,
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -65,17 +65,18 @@ class Authentication implements AuthenticationMethods {
   Future<Account?> _getUserAccountFromDatabase(String? userUID) async {
     if (userUID == null) return null;
 
-    final DataSnapshot accountFromDatabase = await _firebaseDatabase
-        .reference()
+    final DataSnapshot accountFromDatabase = (await _firebaseDatabase
+        .ref()
         .child('users')
         .child('accounts')
         .child(userUID)
-        .once();
+        .once()
+        .then((value) => value.snapshot));
 
     if (!accountFromDatabase.exists) return null;
 
-    final Account account =
-        Account.convertFromDatabase(userUID, accountFromDatabase.value);
+    final Account account = Account.convertFromDatabase(
+        userUID, accountFromDatabase.value as Map<dynamic, dynamic>);
     return account;
   }
 
@@ -83,13 +84,13 @@ class Authentication implements AuthenticationMethods {
     if (userUID == null) return false;
 
     final userAccount = await _firebaseDatabase
-        .reference()
+        .ref()
         .child('users')
         .child('accounts')
         .child(userUID)
         .once();
 
-    final bool userExistsInDatabase = userAccount.exists;
+    final bool userExistsInDatabase = userAccount.snapshot.exists;
     return userExistsInDatabase;
   }
 
@@ -98,25 +99,25 @@ class Authentication implements AuthenticationMethods {
 
     if (id != null) {
       await _firebaseDatabase
-          .reference()
+          .ref()
           .child('professions')
           .child(autonomous.profession!)
           .set({'profession': autonomous.profession});
 
       await _firebaseDatabase
-          .reference()
+          .ref()
           .child('users')
           .child('accounts')
           .child(id)
           .set({'profession': autonomous.profession});
 
-      await _firebaseDatabase.reference().child('quickSearch').child(id).set({
+      await _firebaseDatabase.ref().child('quickSearch').child(id).set({
         'name': autonomous.name,
         'profession': autonomous.profession,
       });
 
       await _firebaseDatabase
-          .reference()
+          .ref()
           .child('users')
           .child('autonomous')
           .child(autonomous.profession!)
@@ -141,40 +142,40 @@ class Authentication implements AuthenticationMethods {
         autonomous.userUID = user.uid;
         await _createNewAutonomousInDatabase(autonomous);
         await user.sendEmailVerification();
-        await showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Verifique seu e-mail!'),
-            content: const Text(
-              'Para proceder, é necessário que você verifique seu e-mail para utilizar o nosso aplicativo.',
-            ),
-            actions: <TextButton>[
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () async => await _navigateToSignInScreen(context),
+        if (context.mounted) {
+          await showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text('Verifique seu e-mail!'),
+              content: const Text(
+                'Para proceder, é necessário que você verifique seu e-mail para utilizar o nosso aplicativo.',
               ),
-            ],
-          ),
-        );
+              actions: <TextButton>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () async => await _navigateToSignInScreen(context),
+                ),
+              ],
+            ),
+          );
+        }
       }
     }).catchError((error) async {
       callback();
-      final String? errorMessage = error.message;
-      if (errorMessage != null) {
-        if (errorMessage.contains('badly formatted')) {
-          await _showDialogToUser(
-            context,
-            'Ocorreu um erro!',
-            'Seu endereço de e-mail está mal formatado.',
-          );
-        } else if (errorMessage.contains('is already in use')) {
-          await _showDialogToUser(
-            context,
-            'Ocorreu um erro!',
-            'O endereço de e-mail fornecido já se encontra em uso por outra conta.',
-          );
-        }
+      final String errorMessage = error.message;
+      if (errorMessage.contains('badly formatted')) {
+        await _showDialogToUser(
+          context,
+          'Ocorreu um erro!',
+          'Seu endereço de e-mail está mal formatado.',
+        );
+      } else if (errorMessage.contains('is already in use')) {
+        await _showDialogToUser(
+          context,
+          'Ocorreu um erro!',
+          'O endereço de e-mail fornecido já se encontra em uso por outra conta.',
+        );
       } else {
         await _showDialogToUser(
           context,
@@ -199,46 +200,48 @@ class Authentication implements AuthenticationMethods {
         final bool userNotHaveVerifiedEmail = !user.emailVerified;
         if (userNotHaveVerifiedEmail) {
           await user.sendEmailVerification();
-          await _showDialogToUser(
-            context,
-            'Verifique seu e-mail!',
-            'Para proceder, é necessário que você verifique seu e-mail para utilizar o nosso aplicativo.',
-          );
+          if (context.mounted) {
+            await _showDialogToUser(
+              context,
+              'Verifique seu e-mail!',
+              'Para proceder, é necessário que você verifique seu e-mail para utilizar o nosso aplicativo.',
+            );
+          }
         } else {
           final Account? account = await _getUserAccountFromDatabase(user.uid);
           if (account != null) {
-            await _saveUserSession(context, account);
+            if (context.mounted) {
+              await _saveUserSession(context, account);
+            }
           }
         }
       }
     }).catchError((error) async {
-      final String? errorMessage = error.message;
-      if (errorMessage != null) {
-        if (errorMessage.contains('badly formatted')) {
-          await _showDialogToUser(
-            context,
-            'Ocorreu um erro!',
-            'Seu endereço de e-mail está mal formatado.',
-          );
-        } else if (errorMessage.contains('is no user record')) {
-          await _showDialogToUser(
-            context,
-            'Ocorreu um erro!',
-            'Seu e-mail não está no nosso banco de dados, logo, você ainda não possui uma conta registrada.',
-          );
-        } else if (errorMessage.contains('password is invalid')) {
-          await _showDialogToUser(
-            context,
-            'Ocorreu um erro!',
-            'Sua senha está incorreta.',
-          );
-        } else if (errorMessage.contains('blocked all requests')) {
-          await _showDialogToUser(
-            context,
-            'Bloqueio temporário',
-            'Nós bloqueamos todas as requisições desse dispositivo por atividades suspeitas. Tente mais tarde.',
-          );
-        }
+      final String errorMessage = error.message;
+      if (errorMessage.contains('badly formatted')) {
+        await _showDialogToUser(
+          context,
+          'Ocorreu um erro!',
+          'Seu endereço de e-mail está mal formatado.',
+        );
+      } else if (errorMessage.contains('is no user record')) {
+        await _showDialogToUser(
+          context,
+          'Ocorreu um erro!',
+          'Seu e-mail não está no nosso banco de dados, logo, você ainda não possui uma conta registrada.',
+        );
+      } else if (errorMessage.contains('password is invalid')) {
+        await _showDialogToUser(
+          context,
+          'Ocorreu um erro!',
+          'Sua senha está incorreta.',
+        );
+      } else if (errorMessage.contains('blocked all requests')) {
+        await _showDialogToUser(
+          context,
+          'Bloqueio temporário',
+          'Nós bloqueamos todas as requisições desse dispositivo por atividades suspeitas. Tente mais tarde.',
+        );
       }
     });
   }
@@ -287,14 +290,18 @@ class Authentication implements AuthenticationMethods {
           await _checkIfUserExistsInDatabase(user.uid);
       if (userExistsInDatabase) {
         final Account? account = await _getUserAccountFromDatabase(user.uid);
-        await _saveUserSession(context, account!);
+        if (context.mounted) {
+          await _saveUserSession(context, account!);
+        }
       } else {
         if (user.email != null) {
-          await _showDialogToUser(
-            context,
-            'Ocorreu um erro!',
-            'Você ainda não possui uma conta. Faça seu cadastro e garanta seu lugar no nosso aplicativo!',
-          );
+          if (context.mounted) {
+            await _showDialogToUser(
+              context,
+              'Ocorreu um erro!',
+              'Você ainda não possui uma conta. Faça seu cadastro e garanta seu lugar no nosso aplicativo!',
+            );
+          }
         }
       }
     });
@@ -322,7 +329,10 @@ class Authentication implements AuthenticationMethods {
       final SharedPreferences preferences =
           await SharedPreferences.getInstance();
       await preferences.clear();
-      await Navigator.of(context).pushReplacementNamed(AppRoutes.initialScreen);
+      if (context.mounted) {
+        await Navigator.of(context)
+            .pushReplacementNamed(AppRoutes.initialScreen);
+      }
     });
   }
 }
