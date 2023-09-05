@@ -20,7 +20,7 @@ class AutonomousListTile extends StatelessWidget {
 
   Future<Autonomous> _getAutonomousData() async {
     return await _firebaseDatabase
-        .reference()
+        .ref()
         .child('users')
         .child('autonomous')
         .child(autonomous.profession ?? '')
@@ -28,11 +28,12 @@ class AutonomousListTile extends StatelessWidget {
         .once()
         .then((snapshot) {
       final Map<String, dynamic> autonomousFormatted =
-          Map<String, dynamic>.from(snapshot.value);
+          Map<String, dynamic>.from(
+              snapshot.snapshot.value as Map<dynamic, dynamic>);
 
       final Autonomous autonomousFromDatabase =
           Autonomous.convertFromDatabase(autonomousFormatted);
-      autonomousFromDatabase.userUID = snapshot.key ?? '';
+      autonomousFromDatabase.userUID = snapshot.snapshot.key ?? '';
       return autonomousFromDatabase;
     });
   }

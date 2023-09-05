@@ -9,7 +9,7 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -28,13 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _getProfessionsFromDatabase() async {
     await _firebaseDatabase
-        .reference()
+        .ref()
         .child('professions')
         .limitToLast(_professionsQueryLimit)
         .once()
         .then((snapshot) {
       final Map<String, dynamic> professionsFromDatabase =
-          Map<String, dynamic>.from(snapshot.value);
+          Map<String, dynamic>.from(
+              snapshot.snapshot.value as Map<dynamic, dynamic>);
 
       professionsFromDatabase.forEach((_, value) {
         final String profession = value['profession'];
@@ -48,15 +49,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _getAutonomousFromDatabase() async {
     if (_professions.isNotEmpty) {
       await _firebaseDatabase
-          .reference()
+          .ref()
           .child('users')
           .child('autonomous')
           .limitToFirst(_professionsQueryLimit)
           .once()
           .then((snapshot) {
         final Map<String, dynamic> professionsFromDatabase =
-            Map<String, dynamic>.from(snapshot.value);
-
+            Map<String, dynamic>.from(
+                snapshot.snapshot.value as Map<dynamic, dynamic>);
         professionsFromDatabase.forEach((_, value) {
           final autonomousFromDatabase = Map<String, dynamic>.from(value);
           autonomousFromDatabase.forEach((id, data) {

@@ -46,10 +46,10 @@ class AutonomousDetailsScreen extends StatelessWidget {
     String id,
     String profession,
   ) async {
-    final List<Autonomous> _similarAutonomous = [];
+    final List<Autonomous> similarAutonomous = [];
 
     await _firebaseDatabase
-        .reference()
+        .ref()
         .child('users')
         .child('autonomous')
         .child(profession)
@@ -57,7 +57,8 @@ class AutonomousDetailsScreen extends StatelessWidget {
         .once()
         .then((snapshot) {
       final Map<String, dynamic> similarAutonomousFromDatabase =
-          Map<String, dynamic>.from(snapshot.value);
+          Map<String, dynamic>.from(
+              snapshot.snapshot.value as Map<dynamic, dynamic>);
 
       similarAutonomousFromDatabase.forEach((key, value) {
         final autonomousFromDatabase = Map<String, dynamic>.from(value);
@@ -65,11 +66,11 @@ class AutonomousDetailsScreen extends StatelessWidget {
             Autonomous.convertFromDatabase(autonomousFromDatabase);
 
         autonomous.userUID = key;
-        _similarAutonomous.add(autonomous);
+        similarAutonomous.add(autonomous);
       });
     });
 
-    return _similarAutonomous
+    return similarAutonomous
         .where((autonomous) => autonomous.id != id)
         .toList();
   }

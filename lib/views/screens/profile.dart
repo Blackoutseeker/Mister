@@ -53,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (profession == null) return Autonomous();
 
     return await _firebaseDatabase
-        .reference()
+        .ref()
         .child('users')
         .child('autonomous')
         .child(profession)
@@ -61,7 +61,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .once()
         .then((snapshot) {
       final Map<String, dynamic> autonomousFormatted =
-          Map<String, dynamic>.from(snapshot.value);
+          Map<String, dynamic>.from(
+              snapshot.snapshot.value as Map<dynamic, dynamic>);
 
       final Autonomous autonomous =
           Autonomous.convertFromDatabase(autonomousFormatted);
@@ -73,20 +74,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _deleteUserFromDatabase(String id, String profession) async {
     await _firebaseDatabase
-        .reference()
+        .ref()
         .child('users')
         .child('accounts')
         .child(id)
         .remove()
         .then((_) async {
       await _firebaseDatabase
-          .reference()
+          .ref()
           .child('quickSearch')
           .child(id)
           .remove()
           .then((_) async {
         await _firebaseDatabase
-            .reference()
+            .ref()
             .child('users')
             .child('autonomous')
             .child(profession)
@@ -196,18 +197,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: ElevatedButton(
                   onPressed: _navigateToSignUpScreen,
-                  child: const Text(
-                    'Criar conta',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
                       const Color(0xFF151054),
                     ),
                     minimumSize: MaterialStateProperty.all(
                       const Size(double.infinity, 40),
+                    ),
+                  ),
+                  child: const Text(
+                    'Criar conta',
+                    style: TextStyle(
+                      fontSize: 18,
                     ),
                   ),
                 ),
@@ -256,8 +257,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: Hero(
-                            tag: (_autonomousStore.autonomous.id ?? 'Default') +
-                                'profile',
+                            tag:
+                                '${_autonomousStore.autonomous.id ?? 'Default'}profile',
                             child: CircleAvatar(
                               maxRadius: 35,
                               backgroundColor: const Color(0xFFEEEEEE),

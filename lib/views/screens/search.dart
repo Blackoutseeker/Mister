@@ -13,7 +13,7 @@ class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
@@ -132,13 +132,14 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _getProfessionsFromDatabase() async {
     await _firebaseDatabase
-        .reference()
+        .ref()
         .child('professions')
         .limitToLast(_professionsQueryLimit)
         .once()
         .then((snapshot) {
       final Map<String, dynamic> professionsFromDatabase =
-          Map<String, dynamic>.from(snapshot.value);
+          Map<String, dynamic>.from(
+              snapshot.snapshot.value as Map<dynamic, dynamic>);
 
       professionsFromDatabase.forEach((_, value) {
         final String profession = value['profession'];
@@ -152,14 +153,15 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> _getAutonomousFromDatabase() async {
     if (_professions.isNotEmpty) {
       await _firebaseDatabase
-          .reference()
+          .ref()
           .child('users')
           .child('autonomous')
           .limitToLast(_professionsQueryLimit)
           .once()
           .then((snapshot) {
         final Map<String, dynamic> professionsFromDatabase =
-            Map<String, dynamic>.from(snapshot.value);
+            Map<String, dynamic>.from(
+                snapshot.snapshot.value as Map<dynamic, dynamic>);
 
         professionsFromDatabase.forEach((_, value) {
           final autonomousFromDatabase = Map<String, dynamic>.from(value);
@@ -181,13 +183,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _getQuickAutonomousFromDatabase() async {
-    await _firebaseDatabase
-        .reference()
-        .child('quickSearch')
-        .once()
-        .then((snapshot) {
-      final Map<String, dynamic> quickAutonomous =
-          Map<String, dynamic>.from(snapshot.value);
+    await _firebaseDatabase.ref().child('quickSearch').once().then((snapshot) {
+      final Map<String, dynamic> quickAutonomous = Map<String, dynamic>.from(
+          snapshot.snapshot.value as Map<dynamic, dynamic>);
 
       quickAutonomous.forEach((id, value) {
         final Map<String, dynamic> autonomousFormatted =
