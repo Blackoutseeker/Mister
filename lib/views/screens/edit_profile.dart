@@ -17,7 +17,7 @@ class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
@@ -89,17 +89,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
 
     if (bannerImage?.path != null) {
-      File? croppedBannerImage = await ImageCropper.cropImage(
+      File? croppedBannerImage = (await ImageCropper().cropImage(
         sourcePath: bannerImage!.path,
         aspectRatioPresets: [CropAspectRatioPreset.ratio16x9],
         compressQuality: 70,
-        androidUiSettings: const AndroidUiSettings(
-          toolbarTitle: 'Cortar imagem',
-          hideBottomControls: true,
-          toolbarColor: Color(0xFF4267B2),
-          toolbarWidgetColor: Color(0xFFFFFFFF),
-        ),
-      );
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Cortar imagem',
+            hideBottomControls: true,
+            toolbarColor: const Color(0xFF4267B2),
+            toolbarWidgetColor: const Color(0xFFFFFFFF),
+          )
+        ],
+      )) as File?;
 
       setState(() {
         _bannerImage = croppedBannerImage;
@@ -116,18 +118,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
 
     if (avatarImage?.path != null) {
-      File? croppedAvatarImage = await ImageCropper.cropImage(
+      File? croppedAvatarImage = (await ImageCropper().cropImage(
         sourcePath: avatarImage!.path,
         aspectRatioPresets: [CropAspectRatioPreset.square],
         compressQuality: 70,
         cropStyle: CropStyle.circle,
-        androidUiSettings: const AndroidUiSettings(
-          toolbarTitle: 'Cortar imagem',
-          hideBottomControls: true,
-          toolbarColor: Color(0xFF4267B2),
-          toolbarWidgetColor: Color(0xFFFFFFFF),
-        ),
-      );
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Cortar imagem',
+            hideBottomControls: true,
+            toolbarColor: const Color(0xFF4267B2),
+            toolbarWidgetColor: const Color(0xFFFFFFFF),
+          )
+        ],
+      )) as File?;
       setState(() {
         _avatarImage = croppedAvatarImage;
       });
@@ -198,13 +202,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
 
     await _firebaseDatabase
-        .reference()
+        .ref()
         .child('professions')
         .child(profession)
         .set({'profession': profession});
 
     await _firebaseDatabase
-        .reference()
+        .ref()
         .child('users')
         .child('accounts')
         .child(id)
@@ -214,7 +218,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     if (_autonomous.profession != profession) {
       await _firebaseDatabase
-          .reference()
+          .ref()
           .child('users')
           .child('autonomous')
           .child(_autonomous.profession ?? '')
@@ -230,7 +234,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     };
 
     await _firebaseDatabase
-        .reference()
+        .ref()
         .child('users')
         .child('autonomous')
         .child(profession)
@@ -242,7 +246,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       'bannerUrl': bannerUrl,
     });
 
-    await _firebaseDatabase.reference().child('quickSearch').child(id).update({
+    await _firebaseDatabase.ref().child('quickSearch').child(id).update({
       'name': name,
       'profession': profession,
       'avatarUrl': avatarUrl,
@@ -349,7 +353,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             clipBehavior: Clip.none,
                             children: <Widget>[
                               Hero(
-                                tag: (_autonomous.id ?? 'Default') + 'profile',
+                                tag: '${_autonomous.id ?? 'Default'}profile',
                                 child: CircleAvatar(
                                   maxRadius: 50,
                                   backgroundColor: const Color(0xFFEEEEEE),
@@ -454,6 +458,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ElevatedButton(
                           onPressed:
                               !_isLoading ? _updateAutonomousInDatabase : null,
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                              const Color(0xFF151054),
+                            ),
+                            minimumSize: MaterialStateProperty.all(
+                              const Size(double.infinity, 40),
+                            ),
+                          ),
                           child: !_isLoading
                               ? const Text(
                                   'Salvar alterações',
@@ -468,14 +480,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     strokeWidth: 2,
                                   ),
                                 ),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                              const Color(0xFF151054),
-                            ),
-                            minimumSize: MaterialStateProperty.all(
-                              const Size(double.infinity, 40),
-                            ),
-                          ),
                         ),
                       ],
                     ),
