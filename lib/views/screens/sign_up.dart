@@ -10,7 +10,7 @@ class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -42,13 +42,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-  void _switcHasAcceptedThePrivacyPolicyState() {
+  void _switchHasAcceptedThePrivacyPolicyState() {
     setState(() {
       _hasAcceptedThePrivacyPolicy = !_hasAcceptedThePrivacyPolicy;
     });
   }
 
-  void _switcHasAcceptedTheTermsOfUseState() {
+  void _switchHasAcceptedTheTermsOfUseState() {
     setState(() {
       _hasAcceptedTheTermsOfUse = !_hasAcceptedTheTermsOfUse;
     });
@@ -122,7 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _openUrl(String url) async {
     _dismissKeyboard();
-    await launch(url);
+    await launchUrl(Uri.parse(url));
   }
 
   Future<void> _navigateToSignInScreen() async {
@@ -280,7 +280,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: SizedBox(
                           height: 40,
                           child: TextButton(
-                            onPressed: _switcHasAcceptedThePrivacyPolicyState,
+                            onPressed: _switchHasAcceptedThePrivacyPolicyState,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 15),
                               child: Row(
@@ -289,7 +289,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     groupValue: true,
                                     value: _hasAcceptedThePrivacyPolicy,
                                     onChanged: (_) =>
-                                        _switcHasAcceptedThePrivacyPolicyState(),
+                                        _switchHasAcceptedThePrivacyPolicyState(),
                                   ),
                                   const Text(
                                     'Li e concordo com a ',
@@ -323,7 +323,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: SizedBox(
                           height: 40,
                           child: TextButton(
-                            onPressed: _switcHasAcceptedTheTermsOfUseState,
+                            onPressed: _switchHasAcceptedTheTermsOfUseState,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 15),
                               child: Row(
@@ -332,7 +332,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     groupValue: true,
                                     value: _hasAcceptedTheTermsOfUse,
                                     onChanged: (_) =>
-                                        _switcHasAcceptedTheTermsOfUseState(),
+                                        _switchHasAcceptedTheTermsOfUseState(),
                                   ),
                                   const Text(
                                     'Li e concordo com os ',
@@ -364,6 +364,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: !_isLoading ? _createNewAutonomous : null,
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            const Color(0xFF151054),
+                          ),
+                          minimumSize: MaterialStateProperty.all(
+                            const Size(double.infinity, 40),
+                          ),
+                        ),
                         child: !_isLoading
                             ? const Text(
                                 'Cadastrar',
@@ -378,17 +386,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   strokeWidth: 2,
                                 ),
                               ),
+                      ),
+                      TextButton(
+                        onPressed: _navigateToSignInScreen,
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                            const Color(0xFF151054),
-                          ),
                           minimumSize: MaterialStateProperty.all(
                             const Size(double.infinity, 40),
                           ),
                         ),
-                      ),
-                      TextButton(
-                        onPressed: _navigateToSignInScreen,
                         child: RichText(
                           text: const TextSpan(
                             style: TextStyle(
@@ -405,11 +410,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                             ],
-                          ),
-                        ),
-                        style: ButtonStyle(
-                          minimumSize: MaterialStateProperty.all(
-                            const Size(double.infinity, 40),
                           ),
                         ),
                       ),

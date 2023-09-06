@@ -5,9 +5,9 @@ import 'package:mister/models/database/account.dart';
 
 part 'account.g.dart';
 
-class AccountStore = _AccountStore with _$AccountStore;
+class AccountStore = AccountStoreBase with _$AccountStore;
 
-abstract class _AccountStore with Store implements AccountStoreTemplate {
+abstract class AccountStoreBase with Store implements AccountStoreTemplate {
   @observable
   @override
   Account account = Account(null, null);

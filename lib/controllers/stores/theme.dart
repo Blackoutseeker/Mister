@@ -6,9 +6,9 @@ import 'package:mister/models/utils/constants.dart';
 
 part 'theme.g.dart';
 
-class ThemeStore = _ThemeStore with _$ThemeStore;
+class ThemeStore = ThemeStoreBase with _$ThemeStore;
 
-abstract class _ThemeStore with Store implements ThemeStoreTemplate {
+abstract class ThemeStoreBase with Store implements ThemeStoreTemplate {
   @observable
   @override
   bool isDark = false;

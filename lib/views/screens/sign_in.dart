@@ -145,18 +145,18 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: _signInWithEmailAndPassword,
-                        child: const Text(
-                          'Entrar',
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
                             const Color(0xFF151054),
                           ),
                           minimumSize: MaterialStateProperty.all(
                             const Size(double.infinity, 40),
+                          ),
+                        ),
+                        child: const Text(
+                          'Entrar',
+                          style: TextStyle(
+                            fontSize: 18,
                           ),
                         ),
                       ),
@@ -183,6 +183,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 10),
                       TextButton(
                         onPressed: _navigateToSignUpScreen,
+                        style: ButtonStyle(
+                          minimumSize: MaterialStateProperty.all(
+                            const Size(double.infinity, 40),
+                          ),
+                        ),
                         child: RichText(
                           text: const TextSpan(
                             style: TextStyle(
@@ -199,11 +204,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                               ),
                             ],
-                          ),
-                        ),
-                        style: ButtonStyle(
-                          minimumSize: MaterialStateProperty.all(
-                            const Size(double.infinity, 40),
                           ),
                         ),
                       ),

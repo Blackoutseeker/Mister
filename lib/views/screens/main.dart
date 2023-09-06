@@ -9,7 +9,7 @@ class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
@@ -54,7 +54,7 @@ class _MainScreenState extends State<MainScreen> {
               label: 'Pesquisar',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.userCircle),
+              icon: Icon(FontAwesomeIcons.circleUser),
               label: 'Perfil',
             ),
           ],

@@ -5,9 +5,11 @@ import 'package:mister/models/database/autonomous.dart';
 
 part 'autonomous.g.dart';
 
-class AutonomousStore = _AutonomousStore with _$AutonomousStore;
+class AutonomousStore = AutonomousStoreBase with _$AutonomousStore;
 
-abstract class _AutonomousStore with Store implements AutonomousStoreTemplate {
+abstract class AutonomousStoreBase
+    with Store
+    implements AutonomousStoreTemplate {
   @observable
   @override
   Autonomous autonomous = Autonomous();
